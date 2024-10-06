@@ -1,5 +1,9 @@
+using System.Text;
 using DotNetEnv;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using Repaso.Config;
 using Repaso.Data;
 using Repaso.Repositories;
 using Repaso.Services;
@@ -16,11 +20,35 @@ var connectionString = $"server={host};port={port};database={databaseName};uid={
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+// ACA CONECTAMOS CON NUESTRA BASE DE DATOS
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseMySql(connectionString, ServerVersion.Parse("8.0.20-mysql")));
 
+// ACA AGREGAMOS EL SERVICIO QUE NOS PERMITE TRABAJAR CON PETS
 builder.Services.AddScoped<IPetRepository, PetServices>();
+
+// ACA HABILITAMOS LA OPCION QUE NOS PERMITE USAR JWT
+builder.Services.AddSingleton<JWT>();
+builder.Services.AddAuthentication(config =>
+{
+    config.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    config.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    config.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(config =>
+{
+    config.RequireHttpsMetadata = false;
+    config.SaveToken = true;
+    config.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidIssuer = Environment.GetEnvironmentVariable("JWT_ISSUER"),
+        ValidateAudience = false,
+        ValidAudience = Environment.GetEnvironmentVariable("JWT_AUDIENCE"),
+        ValidateLifetime = true,
+        ClockSkew = TimeSpan.Zero,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("JWT_KEY")!))
+    };
+});
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -38,10 +66,12 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
+
 app.UseAuthorization();
 
 app.UseWelcomePage(new WelcomePageOptions
- {
+{
     Path = "/"
 });
 
