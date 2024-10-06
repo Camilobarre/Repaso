@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Repaso.Controllers.V1.Pets;
 using Repaso.Repositories;
@@ -18,6 +19,7 @@ namespace Repaso.Controllers.v1.Pets
         }
 
         [HttpDelete("{id}")]
+        [Authorize]
         public async Task<IActionResult> DeletePet(int id)
         {
             await _petRepository.Delete(id);

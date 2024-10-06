@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Repaso.Controllers.V1.Pets;
 using Repaso.Models;
@@ -19,6 +20,7 @@ namespace Repaso.Controllers.v1.Pets
         }
 
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> AddPet(Pet pet)
         {
             await _petRepository.Add(pet);
