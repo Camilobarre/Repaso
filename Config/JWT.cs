@@ -8,7 +8,7 @@ namespace Repaso.Config
 {
     public class JWT
     {
-        public string GenerateJwtToken(User user)
+        public static string GenerateJwtToken(User user)
         {
             var claims = new[]
             {
