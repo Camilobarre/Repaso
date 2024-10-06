@@ -1,6 +1,8 @@
 using DotNetEnv;
 using Microsoft.EntityFrameworkCore;
 using Repaso.Data;
+using Repaso.Repositories;
+using Repaso.Services;
 
 Env.Load();
 
@@ -17,6 +19,8 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseMySql(connectionString, ServerVersion.Parse("8.0.20-mysql")));
+
+builder.Services.AddScoped<IPetRepository, PetServices>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -35,6 +39,11 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
+
+app.UseWelcomePage(new WelcomePageOptions
+ {
+    Path = "/"
+});
 
 app.MapControllers();
 

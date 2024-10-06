@@ -10,7 +10,7 @@ namespace Repaso.Models
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column("id")]
-        public int id { get; set; }
+        public int Id { get; internal set; }
 
         [Column("name")]
         public string Name { get; set; }
