@@ -13,6 +13,7 @@ namespace Repaso.Controllers.v1.Pets
     [ApiController]
     [Route("api/v1/pets")]
     [Tags("pets")]
+    [ApiExplorerSettings(GroupName ="v1")]
     public class PetsCreateController : PetsController
     {
         public PetsCreateController(IPetRepository petRepository) : base(petRepository)

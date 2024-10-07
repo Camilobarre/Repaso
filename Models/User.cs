@@ -18,6 +18,9 @@ namespace Repaso.Models
         [Column("full_name")]
         public string FullName { get; set; }
 
+        [Column ("rol")]
+        public string rol { get; set; }
+
         [Column("email")]
         public string Email { get; set; }
 
